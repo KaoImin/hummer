@@ -1,10 +1,10 @@
 [package]
 name = "hummer"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Eason Gao <kaoimin@qq.com>"]
 edition = "2018"
 license = "MIT"
 description = "Hummer is a set of utilities."
 
 [dependencies]
-hex-simd = "0.5"
+faster-hex = "0.6"

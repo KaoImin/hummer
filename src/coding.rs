@@ -1,13 +1,18 @@
-use hex_simd::{decode_to_boxed_bytes, encode_to_boxed_str, AsciiCase, Error};
+use std::io::{Error, ErrorKind};
 
 pub fn hex_encode<T: AsRef<[u8]>>(src: T) -> String {
-    encode_to_boxed_str(src.as_ref(), AsciiCase::Lower).into_string()
+    faster_hex::hex_string(src.as_ref())
 }
 
 pub fn hex_decode(src: &str) -> Result<Vec<u8>, Error> {
-    decode_to_boxed_bytes(src.as_bytes()).map(Into::into)
-}
+    if src.is_empty() {
+        return Ok(Vec::new());
+    }
 
-pub fn hex_encode_upper<T: AsRef<[u8]>>(src: T) -> String {
-    encode_to_boxed_str(src.as_ref(), AsciiCase::Upper).into_string()
+    let src = src.as_bytes();
+    let mut ret = vec![0u8; src.len() / 2];
+    faster_hex::hex_decode(src, &mut ret)
+        .map_err(|e| Error::new(ErrorKind::Other, e.to_string()))?;
+
+    Ok(ret)
 }
